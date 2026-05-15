@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - NotesApp{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; padding-top: 2rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 style="font-size: 3rem; font-weight: 700; color: white; margin-bottom: 1rem;">
+            About <span style="color: var(--primary);">NotesApp</span>
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto;">
+            Your ultimate companion for organizing thoughts, capturing ideas, and boosting productivity.
+        </p>
+    </div>
+
+    <div class="glass-card" style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.8rem; margin-bottom: 1rem; color: white; display: flex; align-items: center; gap: 0.5rem;">
+            <i data-lucide="target" style="color: var(--primary);"></i> Our Mission
+        </h2>
+        <p style="color: var(--text-main); font-size: 1.1rem; line-height: 1.7;">
+            At NotesApp, we believe that great ideas shouldn't be lost in the chaos of daily life. Our mission is to provide a seamless, secure, and beautiful environment where your thoughts can flourish. Whether you're a student organizing lecture notes, a professional managing projects, or a creative capturing midnight inspirations, NotesApp is built to be your reliable digital brain.
+        </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+        <div class="glass-card" style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: rgba(139, 92, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i data-lucide="shield-check" style="width: 32px; height: 32px; color: var(--primary);"></i>
+            </div>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Secure & Private</h3>
+            <p style="color: var(--text-muted);">Your data is securely stored and protected. We prioritize your privacy above everything else.</p>
+        </div>
+
+        <div class="glass-card" style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: rgba(139, 92, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i data-lucide="zap" style="width: 32px; height: 32px; color: var(--primary);"></i>
+            </div>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Lightning Fast</h3>
+            <p style="color: var(--text-muted);">Optimized for speed. Quickly capture your notes without any lag or distraction.</p>
+        </div>
+
+        <div class="glass-card" style="text-align: center;">
+            <div style="width: 60px; height: 60px; background: rgba(139, 92, 246, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i data-lucide="layout" style="width: 32px; height: 32px; color: var(--primary);"></i>
+            </div>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Beautiful Design</h3>
+            <p style="color: var(--text-muted);">A premium glassmorphism interface that makes note-taking an absolute joy.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us - NotesApp{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto; padding-top: 2rem;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 2rem; text-align: center; font-weight: 700; color: white;">Get in Touch</h1>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+        
+        <!-- Contact Form -->
+        <div class="glass-card">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="mail"></i> Send us a Message
+            </h2>
+            <form method="POST" action="{% url 'contact' %}">
+                {% csrf_token %}
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Your Name</label>
+                    <input type="text" name="name" class="input-field" required placeholder="John Doe">
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Email Address</label>
+                    <input type="email" name="email" class="input-field" required placeholder="john@example.com">
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Message</label>
+                    <textarea name="message" class="input-field" rows="5" required placeholder="How can we help you?"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i data-lucide="send"></i> Send Message
+                </button>
+            </form>
+        </div>
+
+        <!-- Contact Info & Map -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            
+            <div class="glass-card">
+                <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="map-pin"></i> Our Location
+                </h2>
+                <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--glass-border); height: 250px;">
+                    <!-- Embedded Google Map -->
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3691.6800620582617!2d70.7749552!3d22.290106100000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3959ca248c77c099%3A0xdf5ac10af64ac8ee!2sTOPS%20Technologies!5e0!3m2!1sen!2sin!4v1778825516185!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+
+            <!-- WhatsApp Chat Button -->
+            <div class="glass-card" style="text-align: center;">
+                <h3 style="margin-bottom: 1rem; color: var(--text-muted);">Need instant support?</h3>
+                <a href="https://wa.me/+917863084523?text=Hello%20NotesApp%20Team,%20I%20need%20help" target="_blank" class="btn" style="background: #25D366; color: white; width: 100%; justify-content: center; font-size: 1.1rem; padding: 1rem;">
+                    <i data-lucide="message-circle" style="width: 24px; height: 24px;"></i> Chat on WhatsApp
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

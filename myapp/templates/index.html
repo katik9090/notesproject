@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="search-container glass-card" style="padding: 1rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+    <form action="{% url 'index' %}" method="GET" style="display: flex; flex: 1; gap: 1rem; min-width: 300px;">
+        <div style="position: relative; flex: 1;">
+            <i data-lucide="search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-muted);"></i>
+            <input type="text" name="q" value="{{ search_query }}" class="input-field" placeholder="Search your thoughts..." style="margin-bottom: 0; padding-left: 3rem; width: 100%;">
+        </div>
+        <select name="category" class="input-field" style="margin-bottom: 0; width: 180px;" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if selected_cat == cat.id|stringformat:"i" %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    
+    <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <a href="?favorites=True" class="btn {% if show_favs %}btn-primary{% else %}glass-card{% endif %}" style="padding: 0.8rem 1.2rem; margin: 0;">
+            <i data-lucide="star" style="width: 20px; height: 20px; {% if show_favs %}fill: currentColor;{% endif %}"></i>
+        </a>
+        <a href="{% url 'category_list' %}" class="btn glass-card" style="padding: 0.8rem 1.2rem; margin: 0;">
+            <i data-lucide="settings-2" style="width: 20px; height: 20px;"></i>
+        </a>
+        <button onclick="document.getElementById('catModal').style.display='flex'" class="btn glass-card" style="padding: 0.8rem 1.2rem; margin: 0;">
+            <i data-lucide="folder-plus" style="width: 20px; height: 20px;"></i>
+        </button>
+        <a href="{% url 'add_note' %}" class="btn btn-primary">
+            <i data-lucide="plus"></i> New Note
+        </a>
+    </div>
+</div>
+
+<div class="notes-grid">
+    {% for note in notes %}
+    <div class="glass-card note-card animate-fade" style="border-top: 4px solid {{ note.category.color|default:'#8b5cf6' }};">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+            {% if note.category %}
+            <span class="category-badge" style="background: {{ note.category.color }}15; color: {{ note.category.color }}; border: 1px solid {{ note.category.color }}30;">
+                {{ note.category.name }}
+            </span>
+            {% else %}
+            <span></span>
+            {% endif %}
+            
+            <a href="{% url 'toggle_favorite' note.id %}" style="color: {% if note.is_favorite %}#fbbf24{% else %}var(--text-muted){% endif %}; transition: 0.3s;">
+                <i data-lucide="star" style="width: 20px; height: 20px; {% if note.is_favorite %}fill: #fbbf24;{% endif %}"></i>
+            </a>
+        </div>
+        
+        <a href="{% url 'note_detail' note.id %}" style="text-decoration: none; color: inherit; display: block; flex: 1;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main); line-height: 1.4;">{{ note.title }}</h3>
+            <p class="note-content" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">{{ note.content|striptags }}</p>
+        </a>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.8rem;">
+                <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                {{ note.updated_at|timesince }} ago
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+                <a href="{% url 'edit_note' note.id %}" style="color: var(--text-muted);"><i data-lucide="edit-2" style="width: 18px; height: 18px;"></i></a>
+                <a href="{% url 'delete_note' note.id %}" style="color: var(--accent);" onclick="return confirm('Delete this note?')"><i data-lucide="trash-2" style="width: 18px; height: 18px;"></i></a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div style="grid-column: 1/-1; text-align: center; padding: 4rem; display: flex; flex-direction: column; align-items: center;">
+        <img src="/static/empty_notes.png" alt="No notes" style="width: 300px; height: auto; margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3));">
+        <h2 style="color: var(--text-main); margin-bottom: 1rem;">Your workspace is clear</h2>
+        <p style="color: var(--text-muted); max-width: 400px; margin-bottom: 2rem;">Capture your thoughts, ideas, and tasks in one beautiful place. Start by creating your first note.</p>
+        <a href="{% url 'add_note' %}" class="btn btn-primary">
+            <i data-lucide="plus"></i> Create Your First Note
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Category Modal -->
+<div id="catModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div class="glass-card" style="max-width: 400px; width: 90%;">
+        <h3 style="margin-bottom: 1.5rem;">Add Category</h3>
+        <form action="{% url 'add_category' %}" method="POST">
+            {% csrf_token %}
+            <label>Category Name</label>
+            <input type="text" name="name" class="input-field" required placeholder="Work, Personal, etc.">
+            <label>Color</label>
+            <input type="color" name="color" class="input-field" value="#6366f1" style="height: 50px; padding: 5px;">
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="button" onclick="document.getElementById('catModal').style.display='none'" class="btn glass-card" style="flex: 1;">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

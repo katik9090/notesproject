@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}NotesApp - Your Digital Brain{% endblock %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; text-align: center; padding: 2rem;">
+    
+    <div style="max-width: 800px; margin-bottom: 4rem;">
+        <h1 style="font-size: 4rem; font-weight: 700; color: white; margin-bottom: 1.5rem; line-height: 1.2;">
+            Organize Your Thoughts,<br>
+            <span style="background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Beautifully.</span>
+        </h1>
+        <p style="font-size: 1.3rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.6;">
+            NotesApp is the premium, secure, and blazing fast note-taking application designed for professionals and creatives who care about aesthetics.
+        </p>
+        
+        <div style="display: flex; gap: 1.5rem; justify-content: center;">
+            <a href="{% url 'register' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+                Get Started for Free
+                <i data-lucide="arrow-right" style="margin-left: 0.5rem; width: 20px; height: 20px;"></i>
+            </a>
+            <a href="{% url 'about' %}" class="btn glass-card" style="font-size: 1.1rem; padding: 1rem 2.5rem; color: white; text-decoration: none;">
+                Learn More
+            </a>
+        </div>
+    </div>
+
+    <!-- Feature Highlights -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; width: 100%; max-width: 1000px; margin-top: 2rem;">
+        
+        <div class="glass-card" style="text-align: left; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="width: 50px; height: 50px; background: rgba(139, 92, 246, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <i data-lucide="shield" style="color: var(--primary); width: 24px; height: 24px;"></i>
+            </div>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Enterprise Security</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Your data is encrypted and securely stored. We ensure your thoughts stay private and safe.</p>
+        </div>
+
+        <div class="glass-card" style="text-align: left; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="width: 50px; height: 50px; background: rgba(244, 63, 94, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <i data-lucide="zap" style="color: var(--accent); width: 24px; height: 24px;"></i>
+            </div>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Blazing Fast</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Optimized performance allows you to instantly search, create, and organize without any lag.</p>
+        </div>
+
+        <div class="glass-card" style="text-align: left; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="width: 50px; height: 50px; background: rgba(34, 197, 94, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                <i data-lucide="smartphone" style="color: #22c55e; width: 24px; height: 24px;"></i>
+            </div>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Cross Platform</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Access your beautifully crafted notes from any device, anywhere in the world.</p>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

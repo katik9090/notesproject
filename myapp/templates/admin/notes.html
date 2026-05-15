@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}All Notes - Admin{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="{% url 'custom_admin_dashboard' %}" class="btn glass-card" style="padding: 0.75rem;"><i data-lucide="arrow-left"></i></a>
+            <h1 style="font-size: 2.5rem; font-weight: 700;">Platform Notes</h1>
+        </div>
+    </div>
+
+    <div class="glass-card animate-fade">
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--glass-border);">
+                        <th style="padding: 1rem; color: var(--text-muted);">Title</th>
+                        <th style="padding: 1rem; color: var(--text-muted);">Author</th>
+                        <th style="padding: 1rem; color: var(--text-muted);">Category</th>
+                        <th style="padding: 1rem; color: var(--text-muted);">Created</th>
+                        <th style="padding: 1rem; color: var(--text-muted); text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for note in notes %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 1rem; font-weight: 600;">
+                            {{ note.title }}
+                            {% if note.file %}
+                            <i data-lucide="paperclip" style="width: 14px; height: 14px; color: var(--text-muted); margin-left: 0.5rem;"></i>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem;">{{ note.user.username }}</td>
+                        <td style="padding: 1rem;">
+                            {% if note.category %}
+                            <span class="category-badge" style="background: {{ note.category.color }}22; color: {{ note.category.color }}; border: 1px solid {{ note.category.color }}44;">
+                                {{ note.category.name }}
+                            </span>
+                            {% else %}
+                            <span style="color: var(--text-muted);">None</span>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 1rem; color: var(--text-muted); font-size: 0.9rem;">{{ note.created_at|date:"M d, Y" }}</td>
+                        <td style="padding: 1rem; text-align: right;">
+                            <a href="{% url 'delete_note' note.id %}" class="btn" style="padding: 0.4rem 0.8rem; background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; border-radius: 8px;" onclick="return confirm('Delete this note completely?');">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="padding: 2rem; text-align: center; color: var(--text-muted);">No notes found on the platform.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

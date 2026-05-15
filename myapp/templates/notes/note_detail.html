@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ note.title }} - NotesApp{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="{% url 'index' %}" class="btn glass-card" style="padding: 0.5rem;"><i data-lucide="arrow-left"></i></a>
+            <h1>{{ note.title }}</h1>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <a href="{% url 'toggle_favorite' note.id %}" class="btn glass-card" style="color: {% if note.is_favorite %}#fbbf24{% else %}inherit{% endif %};">
+                <i data-lucide="star" style="{% if note.is_favorite %}fill: #fbbf24;{% endif %}"></i>
+            </a>
+            <a href="{% url 'edit_note' note.id %}" class="btn btn-primary"><i data-lucide="edit-3"></i> Edit</a>
+            <a href="{% url 'delete_note' note.id %}" class="btn btn-danger" onclick="return confirm('Delete this note?')"><i data-lucide="trash-2"></i></a>
+        </div>
+    </div>
+
+    <div class="glass-card animate-fade">
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; align-items: center;">
+            {% if note.category %}
+            <span class="category-badge" style="background: {{ note.category.color }}22; color: {{ note.category.color }}; border: 1px solid {{ note.category.color }}44; position: static;">
+                {{ note.category.name }}
+            </span>
+            {% endif %}
+            <span style="color: var(--text-muted); font-size: 0.9rem;">
+                <i data-lucide="clock" style="width: 14px; height: 14px;"></i> Last updated {{ note.updated_at|timesince }} ago
+            </span>
+        </div>
+        
+        <div style="font-size: 1.15rem; line-height: 1.8; color: var(--text-main); word-wrap: break-word;">
+            {{ note.content|safe }}
+        </div>
+
+        {% if note.file %}
+        <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--glass-border);">
+            <h4 style="margin-bottom: 1rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="paperclip" style="width: 18px; height: 18px;"></i> Attachment
+            </h4>
+            <div class="glass-card" style="padding: 1rem; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03);">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <i data-lucide="file-text" style="color: var(--primary);"></i>
+                    <span style="font-weight: 600;">{{ note.file.name|cut:"note_files/" }}</span>
+                </div>
+                <a href="{{ note.file.url }}" class="btn btn-primary" style="padding: 0.5rem 1rem;" download>
+                    <i data-lucide="download"></i> Download
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

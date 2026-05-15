@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - NotesApp{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem;">
+        <a href="{% url 'index' %}" class="btn glass-card" style="padding: 0.75rem;"><i data-lucide="arrow-left"></i></a>
+        <h1 style="font-size: 2.5rem; font-weight: 700;">Account Settings</h1>
+    </div>
+
+    <div class="glass-card animate-fade" style="text-align: center; padding: 4rem 2rem;">
+        <div style="width: 100px; height: 100px; background: var(--primary); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 3rem; color: white; font-weight: 700; box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);">
+            {{ user.username|first|upper }}
+        </div>
+        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">{{ user.username }}</h2>
+        <p style="color: var(--text-muted); margin-bottom: 3rem;">{{ user.email }}</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem;">
+            <div class="glass-card" style="padding: 1.5rem; background: rgba(255,255,255,0.03);">
+                <h4 style="color: var(--text-muted); margin-bottom: 0.5rem;">Total Notes</h4>
+                <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary);">{{ notes_count }}</div>
+            </div>
+            <div class="glass-card" style="padding: 1.5rem; background: rgba(255,255,255,0.03);">
+                <h4 style="color: var(--text-muted); margin-bottom: 0.5rem;">Starred</h4>
+                <div style="font-size: 2.5rem; font-weight: 700; color: #fbbf24;">{{ fav_count }}</div>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 300px; margin: 0 auto;">
+            <a href="{% url 'logout' %}" class="btn btn-danger" style="width: 100%;">
+                <i data-lucide="log-out"></i> Logout
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

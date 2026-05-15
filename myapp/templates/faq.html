@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}FAQ & Help - NotesApp{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; padding-top: 2rem;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 style="font-size: 3rem; font-weight: 700; color: white; margin-bottom: 1rem;">
+            Help & <span style="color: var(--primary);">FAQ</span>
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.2rem;">
+            Find answers to common questions and learn how to use NotesApp effectively.
+        </p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <div class="glass-card">
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="help-circle" style="color: var(--primary); width: 20px; height: 20px;"></i>
+                How do I create a new note?
+            </h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">
+                Once logged in, click the "Add Note" button on the main dashboard. You can add a title, write your content using our rich text editor, assign a category, and even attach files.
+            </p>
+        </div>
+
+        <div class="glass-card">
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="help-circle" style="color: var(--primary); width: 20px; height: 20px;"></i>
+                Can I organize my notes into categories?
+            </h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">
+                Yes! You can create custom categories with specific colors from the sidebar. When creating or editing a note, simply select the relevant category to keep your workspace organized.
+            </p>
+        </div>
+
+        <div class="glass-card">
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="help-circle" style="color: var(--primary); width: 20px; height: 20px;"></i>
+                How do I favorite a note?
+            </h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">
+                On any note card in your dashboard, click the heart icon. This will mark the note as a favorite. You can then quickly filter all your favorite notes using the toggle on the dashboard.
+            </p>
+        </div>
+
+        <div class="glass-card">
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="help-circle" style="color: var(--primary); width: 20px; height: 20px;"></i>
+                Is there a limit to how many files I can attach?
+            </h3>
+            <p style="color: var(--text-muted); line-height: 1.6;">
+                Currently, you can attach one file per note (PDF, image, etc.). If you need to attach more documents, we recommend creating a ZIP file or linking to an external drive.
+            </p>
+        </div>
+
+        <div class="glass-card" style="text-align: center; margin-top: 2rem; border-color: var(--primary);">
+            <h3 style="color: white; margin-bottom: 1rem;">Still have questions?</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Our support team is here to help you.</p>
+            <a href="{% url 'contact' %}" class="btn btn-primary">
+                <i data-lucide="phone"></i> Contact Support
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

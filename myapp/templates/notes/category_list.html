@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Categories - NotesApp{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="{% url 'index' %}" class="btn glass-card" style="padding: 0.75rem;"><i data-lucide="arrow-left"></i></a>
+            <h1 style="font-size: 2.5rem; font-weight: 700;">Categories</h1>
+        </div>
+        <button onclick="document.getElementById('catModal').style.display='flex'" class="btn btn-primary">
+            <i data-lucide="plus"></i> Add New
+        </button>
+    </div>
+
+    <div class="glass-card animate-fade">
+        <div style="display: grid; gap: 1rem;">
+            {% for cat in categories %}
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 1.25rem; background: rgba(255,255,255,0.03); border-radius: 16px; border: 1px solid var(--glass-border);">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 20px; height: 20px; border-radius: 6px; background: {{ cat.color }};"></div>
+                    <span style="font-size: 1.1rem; font-weight: 600;">{{ cat.name }}</span>
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">({{ cat.notes.count }} notes)</span>
+                </div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <a href="{% url 'delete_category' cat.id %}" class="btn btn-danger" style="padding: 0.5rem; border-radius: 8px;" onclick="return confirm('Delete this category? Notes will remain but will be uncategorized.')">
+                        <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                <i data-lucide="folder" style="width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+                <p>No categories created yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div id="catModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+    <div class="glass-card" style="max-width: 400px; width: 90%;">
+        <h3 style="margin-bottom: 1.5rem;">New Category</h3>
+        <form action="{% url 'add_category' %}" method="POST">
+            {% csrf_token %}
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Name</label>
+            <input type="text" name="name" class="input-field" required placeholder="Work, Ideas, Home...">
+            <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted);">Label Color</label>
+            <input type="color" name="color" class="input-field" value="#8b5cf6" style="height: 50px; padding: 5px;">
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="button" onclick="document.getElementById('catModal').style.display='none'" class="btn glass-card" style="flex: 1;">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1;">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

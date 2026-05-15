@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Note - NotesApp{% endblock %}
+
+{% block content %}
+<style>
+    .ql-toolbar.ql-snow { border: 1px solid var(--glass-border); border-radius: 12px 12px 0 0; background: rgba(255,255,255,0.05); }
+    .ql-container.ql-snow { border: 1px solid var(--glass-border); border-radius: 0 0 12px 12px; background: rgba(255,255,255,0.05); min-height: 300px; font-size: 1.1rem; }
+    .ql-editor { color: var(--text-main); }
+    .ql-editor.ql-blank::before { color: var(--text-muted); }
+    .ql-snow .ql-stroke { stroke: var(--text-muted); }
+    .ql-snow .ql-fill { fill: var(--text-muted); }
+    .ql-snow.ql-toolbar button:hover .ql-stroke, .ql-snow.ql-toolbar button:hover .ql-fill { stroke: var(--primary); fill: var(--primary); }
+</style>
+
+<div style="max-width: 900px; margin: 0 auto;">
+    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2.5rem;">
+        <a href="{% url 'index' %}" class="btn glass-card" style="padding: 0.75rem;"><i data-lucide="arrow-left"></i></a>
+        <h1 style="font-size: 2.5rem; font-weight: 700;">New Note</h1>
+    </div>
+
+    <div class="glass-card animate-fade">
+        <form method="POST" id="note-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; margin-bottom: 0.75rem; color: var(--text-muted); font-weight: 600;">Title</label>
+                <input type="text" name="title" class="input-field" required placeholder="Note title..." 
+                       style="font-size: 1.5rem; font-weight: 700; height: 4rem; padding: 0 1.5rem;">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                <div>
+                    <label style="display: block; margin-bottom: 0.75rem; color: var(--text-muted); font-weight: 600;">Category</label>
+                    <select name="category" class="input-field" style="height: 3.5rem;">
+                        <option value="">No Category</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; padding-top: 1.5rem;">
+                    <input type="checkbox" name="is_favorite" id="is_fav" style="width: 24px; height: 24px; cursor: pointer; accent-color: var(--primary);">
+                    <label for="is_fav" style="cursor: pointer; font-weight: 600;">Add to favorites</label>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; margin-bottom: 0.75rem; color: var(--text-muted); font-weight: 600;">Attachment (Any file type)</label>
+                <input type="file" name="file" class="input-field" style="padding: 1rem; height: auto;">
+            </div>
+
+            <div style="margin-bottom: 2.5rem;">
+                <label style="display: block; margin-bottom: 0.75rem; color: var(--text-muted); font-weight: 600;">Content</label>
+                <div id="editor"></div>
+                <input type="hidden" name="content" id="content">
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <a href="{% url 'index' %}" class="btn glass-card" style="flex: 1;">Cancel</a>
+                <button type="submit" class="btn btn-primary" style="flex: 2; height: 3.5rem;">
+                    <i data-lucide="save"></i> Create Note
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    var quill = new Quill('#editor', {
+        theme: 'snow',
+        placeholder: 'Write your heart out...',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'blockquote', 'code-block'],
+                ['clean']
+            ]
+        }
+    });
+
+    var form = document.getElementById('note-form');
+    form.onsubmit = function() {
+        var content = document.querySelector('input[name=content]');
+        content.value = quill.root.innerHTML;
+    };
+</script>
+{% endblock %}

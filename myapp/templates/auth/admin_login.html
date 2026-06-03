@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Portal - NotesApp{% endblock %}
+
+{% block content %}
+<style>
+    /* Override primary colors for Admin Theme to Emerald Green */
+    :root {
+        --primary: #10b981 !important;
+        --primary-hover: #059669 !important;
+        --accent: #f59e0b !important; /* Amber accent */
+    }
+    
+    #admin-canvas-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        pointer-events: none;
+    }
+</style>
+
+<div id="admin-canvas-bg"></div>
+
+<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh; position: relative; z-index: 1;">
+    <div class="glass-card animate-fade" style="width: 100%; max-width: 400px; padding: 2.5rem; border-top: 1px solid rgba(16, 185, 129, 0.4); border-left: 1px solid rgba(16, 185, 129, 0.2);">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.15); border: 1px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                <i data-lucide="shield-check" style="color: var(--primary); width: 30px; height: 30px;"></i>
+            </div>
+            <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px;">Admin Portal</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Secure system administration log in</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Administrator Username</label>
+                <input type="text" name="username" class="input-field" required placeholder="Enter username" style="margin-bottom: 0;">
+            </div>
+            
+            <div style="margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <label style="color: var(--text-muted); font-size: 0.9rem;">Password</label>
+                </div>
+                <div style="position: relative;">
+                    <input type="password" name="password" class="input-field" required placeholder="Enter password" style="margin-bottom: 0; padding-right: 3rem;">
+                    <button type="button" class="password-toggle-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%; width: 40px; padding: 0;">
+                        <i data-lucide="eye" style="width: 20px; height: 20px;"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; height: 3.5rem; box-shadow: 0 5px 0 #047857, 0 10px 20px rgba(0,0,0,0.4);">
+                <i data-lucide="shield-alert"></i> Authorize & Enter
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Not an Admin? <a href="{% url 'login' %}" style="color: var(--primary); font-weight: 600; text-decoration: none;">User Login</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Subtle admin page specific 3D floating animation (Three.js)
+        const container = document.getElementById('admin-canvas-bg');
+        if (!container || typeof THREE === 'undefined') return;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 100;
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Particle nodes
+        const particleCount = 70;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const velocities = [];
+
+        for (let i = 0; i < particleCount; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * window.innerWidth * 0.8;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * window.innerHeight * 0.8;
+            positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+
+            velocities.push({
+                x: (Math.random() - 0.5) * 0.2,
+                y: (Math.random() - 0.5) * 0.2,
+                z: (Math.random() - 0.5) * 0.1
+            });
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        // Use standard round particle material
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const ctx = canvas.getContext('2d');
+        const gradient = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+        gradient.addColorStop(0, 'rgba(16, 185, 129, 1)');
+        gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 16, 16);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        const material = new THREE.PointsMaterial({
+            size: 8,
+            map: texture,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        const pointCloud = new THREE.Points(geometry, material);
+        scene.add(pointCloud);
+
+        // Grid lines to connect particles close to each other
+        const maxDist = 150;
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.1 });
+        let lineSegments;
+
+        function updateParticlesAndLines() {
+            const posAttr = geometry.attributes.position;
+            const coords = posAttr.array;
+
+            const lineCoords = [];
+
+            for (let i = 0; i < particleCount; i++) {
+                coords[i * 3] += velocities[i].x;
+                coords[i * 3 + 1] += velocities[i].y;
+                coords[i * 3 + 2] += velocities[i].z;
+
+                // Bounce walls roughly
+                if (Math.abs(coords[i * 3]) > window.innerWidth * 0.4) velocities[i].x *= -1;
+                if (Math.abs(coords[i * 3 + 1]) > window.innerHeight * 0.4) velocities[i].y *= -1;
+                if (Math.abs(coords[i * 3 + 2]) > 150) velocities[i].z *= -1;
+
+                // Find neighbor connections
+                for (let j = i + 1; j < particleCount; j++) {
+                    const dx = coords[i * 3] - coords[j * 3];
+                    const dy = coords[i * 3 + 1] - coords[j * 3 + 1];
+                    const dz = coords[i * 3 + 2] - coords[j * 3 + 2];
+                    const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+                    if (dist < maxDist) {
+                        lineCoords.push(coords[i * 3], coords[i * 3 + 1], coords[i * 3 + 2]);
+                        lineCoords.push(coords[j * 3], coords[j * 3 + 1], coords[j * 3 + 2]);
+                    }
+                }
+            }
+            posAttr.needsUpdate = true;
+
+            if (lineSegments) scene.remove(lineSegments);
+            if (lineCoords.length > 0) {
+                const lineGeometry = new THREE.BufferGeometry();
+                lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(lineCoords, 3));
+                lineSegments = new THREE.LineSegments(lineGeometry, lineMaterial);
+                scene.add(lineSegments);
+            }
+        }
+
+        // Mouse track
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
+        });
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            updateParticlesAndLines();
+
+            // Parallax rotate based on mouse
+            pointCloud.rotation.y += 0.001;
+            scene.rotation.y = THREE.MathUtils.lerp(scene.rotation.y, mouseX * 0.005, 0.05);
+            scene.rotation.x = THREE.MathUtils.lerp(scene.rotation.x, mouseY * 0.005, 0.05);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    });
+</script>
+{% endblock %}

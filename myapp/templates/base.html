@@ -11,6 +11,7 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
             --primary: #8b5cf6;
@@ -188,6 +189,18 @@
         .message.success { background: rgba(34, 197, 94, 0.85); border-color: rgba(34, 197, 94, 0.2); }
         .message.error { background: rgba(239, 68, 68, 0.85); border-color: rgba(239, 68, 68, 0.2); }
         @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* 3D Depth Styling */
+        .glass-card {
+            transform-style: preserve-3d;
+        }
+        .glass-card h2, .glass-card h3, .glass-card .btn, .glass-card .input-field, .glass-card label, .glass-card a, .glass-card p {
+            transform: translateZ(25px);
+            transition: transform 0.3s ease;
+        }
+        .password-toggle-btn {
+            transform: translateZ(30px) translateY(-50%) !important;
+        }
     </style>
 </head>
 <body>
@@ -203,7 +216,7 @@
     </div>
 
     <nav class="navbar">
-        <a href="{% if user.is_authenticated %}{% url 'index' %}{% else %}{% url 'home' %}{% endif %}" style="color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
+        <a href="{% if user.is_authenticated %}{% if user.is_superuser %}{% url 'custom_admin_dashboard' %}{% else %}{% url 'index' %}{% endif %}{% else %}{% url 'home' %}{% endif %}" style="color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; gap: 0.5rem;">
             <i data-lucide="book-open"></i> NotesApp
         </a>
         <div style="display: flex; align-items: center; gap: 1.5rem;">
@@ -229,6 +242,7 @@
                     <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
                 </a>
             {% else %}
+                <a href="{% url 'admin_login' %}" style="color: var(--text-muted); font-weight: 600; text-decoration: none; transition: 0.3s; font-size: 0.95rem; margin-right: 0.5rem;" onmouseover="this.style.color='white'" onmouseout="this.style.color='var(--text-muted)'">Admin Login</a>
                 <a href="{% url 'login' %}" style="color: var(--text-main); font-weight: 600; text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'">Login</a>
                 <a href="{% url 'register' %}" class="btn btn-primary" style="padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.9rem;">Get Started</a>
             {% endif %}
@@ -247,6 +261,59 @@
             const msgs = document.querySelectorAll('.message');
             msgs.forEach(m => m.style.display = 'none');
         }, 5000);
+
+        // Password Show/Hide Toggle
+        document.body.addEventListener('click', function(e) {
+            const btn = e.target.closest('.password-toggle-btn');
+            if (btn) {
+                const input = btn.previousElementSibling;
+                const icon = btn.querySelector('[data-lucide]');
+                if (input && icon) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.setAttribute('data-lucide', 'eye-off');
+                    } else {
+                        input.type = 'password';
+                        icon.setAttribute('data-lucide', 'eye');
+                    }
+                    lucide.createIcons();
+                }
+            }
+        });
+
+        // 3D Glass Card Tilt Animation
+        function init3DTilt() {
+            const cards = document.querySelectorAll('.glass-card:not(.search-container)');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const xc = rect.width / 2;
+                    const yc = rect.height / 2;
+                    
+                    const dx = x - xc;
+                    const dy = y - yc;
+                    
+                    const tiltX = -(dy / yc) * 12;
+                    const tiltY = (dx / xc) * 12;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-8px) scale(1.02)`;
+                    card.style.boxShadow = `
+                        ${tiltY * -1}px ${tiltX}px 30px rgba(0, 0, 0, 0.5),
+                        -5px -5px 15px rgba(255, 255, 255, 0.05),
+                        inset 1px 1px 3px rgba(255, 255, 255, 0.2)
+                    `;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0) scale(1)';
+                    card.style.boxShadow = '';
+                });
+            });
+        }
+        document.addEventListener('DOMContentLoaded', init3DTilt);
     </script>
 </body>
 </html>

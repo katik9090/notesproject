@@ -13,10 +13,12 @@ urlpatterns = [
     path('admin/notes/', views.custom_admin_notes, name='custom_admin_notes'),
     path('admin/approve/<int:pk>/', views.custom_admin_approve_user, name='custom_admin_approve_user'),
     path('admin/decline/<int:pk>/', views.custom_admin_decline_user, name='custom_admin_decline_user'),
+    path('admin-login/', views.admin_login_view, name='admin_login'),
     
     # Auth
     path('register/', views.register, name='register'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),
+    path('resend-otp/', views.resend_otp, name='resend_otp'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile, name='profile'),

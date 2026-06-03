@@ -3,56 +3,238 @@
 {% block title %}NotesApp - Your Digital Brain{% endblock %}
 
 {% block content %}
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; text-align: center; padding: 2rem;">
-    
-    <div style="max-width: 800px; margin-bottom: 4rem;">
-        <h1 style="font-size: 4rem; font-weight: 700; color: white; margin-bottom: 1.5rem; line-height: 1.2;">
-            Organize Your Thoughts,<br>
-            <span style="background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Beautifully.</span>
-        </h1>
-        <p style="font-size: 1.3rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.6;">
-            NotesApp is the premium, secure, and blazing fast note-taking application designed for professionals and creatives who care about aesthetics.
-        </p>
+<div style="display: flex; flex-direction: column; min-height: 80vh;">
+    <!-- Hero Section (2-Column Desktop Grid) -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 2rem 0; gap: 3rem; margin-bottom: 4rem;">
         
-        <div style="display: flex; gap: 1.5rem; justify-content: center;">
-            <a href="{% url 'register' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
-                Get Started for Free
-                <i data-lucide="arrow-right" style="margin-left: 0.5rem; width: 20px; height: 20px;"></i>
-            </a>
-            <a href="{% url 'about' %}" class="btn glass-card" style="font-size: 1.1rem; padding: 1rem 2.5rem; color: white; text-decoration: none;">
-                Learn More
-            </a>
+        <!-- Left Column: Branding text and CTA -->
+        <div style="flex: 1 1 500px; text-align: left; max-width: 600px;" class="animate-fade">
+            <h1 style="font-size: 4rem; font-weight: 700; color: white; margin-bottom: 1.5rem; line-height: 1.15; font-family: 'Outfit', sans-serif;">
+                Organize Your Thoughts,<br>
+                <span style="background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Beautifully.</span>
+            </h1>
+            <p style="font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2.5rem; line-height: 1.6;">
+                NotesApp is a premium, secure, and blazing fast digital notebook designed for professionals and creatives who value aesthetics and structure.
+            </p>
+            
+            <div style="display: flex; gap: 1.5rem; justify-content: flex-start; flex-wrap: wrap;">
+                <a href="{% url 'register' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2.2rem;">
+                    Get Started for Free
+                    <i data-lucide="arrow-right" style="margin-left: 0.5rem; width: 20px; height: 20px;"></i>
+                </a>
+                <a href="{% url 'about' %}" class="btn glass-card" style="font-size: 1.1rem; padding: 1rem 2.2rem; color: white; text-decoration: none;">
+                    Learn More
+                </a>
+            </div>
         </div>
+
+        <!-- Right Column: Interactive 3D Canvas -->
+        <div style="flex: 1 1 400px; display: flex; justify-content: center; align-items: center; min-height: 400px; position: relative;" class="animate-fade">
+            <!-- Ambient backdrop glow for 3D element -->
+            <div style="position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%); z-index: -1;"></div>
+            <div id="canvas3d-container" style="width: 100%; height: 450px; max-width: 500px; cursor: grab; position: relative;"></div>
+        </div>
+
     </div>
 
     <!-- Feature Highlights -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; width: 100%; max-width: 1000px; margin-top: 2rem;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; width: 100%; margin-top: 2rem; padding-bottom: 4rem;">
         
         <div class="glass-card" style="text-align: left; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
             <div style="width: 50px; height: 50px; background: rgba(139, 92, 246, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
                 <i data-lucide="shield" style="color: var(--primary); width: 24px; height: 24px;"></i>
             </div>
-            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Enterprise Security</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Your data is encrypted and securely stored. We ensure your thoughts stay private and safe.</p>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem; font-family: 'Outfit', sans-serif;">Enterprise Security</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Your data is encrypted and securely stored. We ensure your thoughts stay private and safe.</p>
         </div>
 
         <div class="glass-card" style="text-align: left; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
             <div style="width: 50px; height: 50px; background: rgba(244, 63, 94, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
                 <i data-lucide="zap" style="color: var(--accent); width: 24px; height: 24px;"></i>
             </div>
-            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Blazing Fast</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Optimized performance allows you to instantly search, create, and organize without any lag.</p>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem; font-family: 'Outfit', sans-serif;">Blazing Fast</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Optimized performance allows you to instantly search, create, and organize without any lag.</p>
         </div>
 
         <div class="glass-card" style="text-align: left; transition: transform 0.3s; cursor: pointer;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
             <div style="width: 50px; height: 50px; background: rgba(34, 197, 94, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
                 <i data-lucide="smartphone" style="color: #22c55e; width: 24px; height: 24px;"></i>
             </div>
-            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem;">Cross Platform</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem;">Access your beautifully crafted notes from any device, anywhere in the world.</p>
+            <h3 style="font-size: 1.3rem; color: white; margin-bottom: 0.5rem; font-family: 'Outfit', sans-serif;">Cross Platform</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">Access your beautifully crafted notes from any device, anywhere in the world.</p>
         </div>
 
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.getElementById('canvas3d-container');
+        if (!container || typeof THREE === 'undefined') return;
+
+        // Get exact container dimensions
+        const width = container.clientWidth || 450;
+        const height = container.clientHeight || 450;
+
+        const scene = new THREE.Scene();
+        
+        // Camera
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        camera.position.z = 25;
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // Group to hold everything
+        const group = new THREE.Group();
+        scene.add(group);
+
+        // 3D Geometry: Torus Knot (futuristic, looks like a complex structure)
+        const geometry = new THREE.TorusKnotGeometry(4.5, 1.4, 150, 16);
+        
+        // Material 1: Glowing Wireframe
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x8b5cf6, // purple
+            wireframe: true,
+            transparent: true,
+            opacity: 0.75,
+            roughness: 0.1,
+            metalness: 0.9
+        });
+        
+        const torusKnot = new THREE.Mesh(geometry, material);
+        group.add(torusKnot);
+
+        // Material 2: Inner solid core with glass/translucent feel
+        const innerGeom = new THREE.TorusKnotGeometry(4.4, 1.25, 150, 16);
+        const innerMaterial = new THREE.MeshPhongMaterial({
+            color: 0xf43f5e, // rose/pink
+            transparent: true,
+            opacity: 0.2,
+            shininess: 120,
+            flatShading: true
+        });
+        const innerMesh = new THREE.Mesh(innerGeom, innerMaterial);
+        group.add(innerMesh);
+
+        // Particles orbiting
+        const particleCount = 200;
+        const particleGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const originalCoords = [];
+
+        for (let i = 0; i < particleCount; i++) {
+            // Distribute in a spherical shell around the torus knot
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos((Math.random() * 2) - 1);
+            const distance = 7 + Math.random() * 4;
+
+            const x = distance * Math.sin(phi) * Math.cos(theta);
+            const y = distance * Math.sin(phi) * Math.sin(theta);
+            const z = distance * Math.cos(phi);
+
+            positions[i * 3] = x;
+            positions[i * 3 + 1] = y;
+            positions[i * 3 + 2] = z;
+
+            originalCoords.push({ x, y, z, speed: 0.005 + Math.random() * 0.01, angle: Math.random() * Math.PI * 2 });
+        }
+
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+        // Particle Texture (nice round glowing point)
+        const pCanvas = document.createElement('canvas');
+        pCanvas.width = 16;
+        pCanvas.height = 16;
+        const pCtx = pCanvas.getContext('2d');
+        const pGradient = pCtx.createRadialGradient(8, 8, 0, 8, 8, 8);
+        pGradient.addColorStop(0, 'rgba(244, 63, 94, 1)');
+        pGradient.addColorStop(1, 'rgba(244, 63, 94, 0)');
+        pCtx.fillStyle = pGradient;
+        pCtx.fillRect(0, 0, 16, 16);
+        
+        const pTexture = new THREE.CanvasTexture(pCanvas);
+        const pMaterial = new THREE.PointsMaterial({
+            size: 0.5,
+            map: pTexture,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false
+        });
+
+        const particles = new THREE.Points(particleGeometry, pMaterial);
+        group.add(particles);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const purpleLight = new THREE.PointLight(0x8b5cf6, 2.5, 50);
+        purpleLight.position.set(12, 12, 12);
+        scene.add(purpleLight);
+
+        const roseLight = new THREE.PointLight(0xf43f5e, 2.5, 50);
+        roseLight.position.set(-12, -12, 12);
+        scene.add(roseLight);
+
+        // Mouse Interaction
+        let targetX = 0;
+        let targetY = 0;
+        
+        window.addEventListener('mousemove', (event) => {
+            const x = event.clientX - window.innerWidth / 2;
+            const y = event.clientY - window.innerHeight / 2;
+            targetX = (x / window.innerWidth) * 1.5;
+            targetY = (y / window.innerHeight) * 1.5;
+        });
+
+        // Animation loop
+        let clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsedTime = clock.getElapsedTime();
+
+            // Rotations
+            torusKnot.rotation.x = elapsedTime * 0.12;
+            torusKnot.rotation.y = elapsedTime * 0.18;
+
+            innerMesh.rotation.x = -elapsedTime * 0.08;
+            innerMesh.rotation.y = -elapsedTime * 0.12;
+
+            // Move particles slightly
+            const positionsArr = particleGeometry.attributes.position.array;
+            for (let i = 0; i < particleCount; i++) {
+                originalCoords[i].angle += originalCoords[i].speed;
+                // Wobble coordinates slightly
+                positionsArr[i * 3] += Math.sin(elapsedTime + originalCoords[i].angle) * 0.005;
+                positionsArr[i * 3 + 1] += Math.cos(elapsedTime + originalCoords[i].angle) * 0.005;
+            }
+            particleGeometry.attributes.position.needsUpdate = true;
+            particles.rotation.y = -elapsedTime * 0.04;
+
+            // Smoothly rotate based on target mouse coordinate
+            group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, targetX, 0.05);
+            group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, targetY, 0.05);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle resize dynamically
+        window.addEventListener('resize', () => {
+            if (!container) return;
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+    });
+</script>
 {% endblock %}

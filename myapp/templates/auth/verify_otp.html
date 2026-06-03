@@ -21,6 +21,35 @@
                 Verify & Login <i data-lucide="check-circle"></i>
             </button>
         </form>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <p style="color: var(--text-muted); font-size: 0.9rem;">
+                Didn't receive the code? 
+                <a href="{% url 'resend_otp' %}" id="resend-btn" style="color: var(--primary); font-weight: 600; text-decoration: none; pointer-events: none; opacity: 0.5; transition: all 0.3s ease;">
+                    Resend OTP <span id="timer">(30s)</span>
+                </a>
+            </p>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                let timeLeft = 30;
+                const timerSpan = document.getElementById('timer');
+                const resendBtn = document.getElementById('resend-btn');
+
+                const interval = setInterval(() => {
+                    timeLeft--;
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        timerSpan.textContent = '';
+                        resendBtn.style.pointerEvents = 'auto';
+                        resendBtn.style.opacity = '1';
+                    } else {
+                        timerSpan.textContent = `(${timeLeft}s)`;
+                    }
+                }, 1000);
+            });
+        </script>
     </div>
 </div>
 {% endblock %}

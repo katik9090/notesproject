@@ -24,7 +24,12 @@
             
             <div style="margin-bottom: 2rem;">
                 <label style="display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem;">Password</label>
-                <input type="password" name="password" class="input-field" required placeholder="Create password" style="margin-bottom: 0;">
+                <div style="position: relative;">
+                    <input type="password" name="password" class="input-field" required placeholder="Create password" style="margin-bottom: 0; padding-right: 3rem;">
+                    <button type="button" class="password-toggle-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%; width: 40px; padding: 0;">
+                        <i data-lucide="eye" style="width: 20px; height: 20px;"></i>
+                    </button>
+                </div>
             </div>
             
             <button type="submit" class="btn btn-primary" style="width: 100%; height: 3.5rem;">

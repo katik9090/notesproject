@@ -35,4 +35,6 @@ class Profile(models.Model):
     def generate_otp(self):
         self.otp = str(random.randint(100000, 999999))
         self.save()
+        print(f"\n--- DEBUG: OTP for {self.user.username} is {self.otp} ---\n")
         return self.otp
+

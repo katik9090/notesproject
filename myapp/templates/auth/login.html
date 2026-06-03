@@ -22,7 +22,12 @@
                     <label style="color: var(--text-muted); font-size: 0.9rem;">Password</label>
                     <a href="{% url 'forgot_password' %}" style="color: var(--primary); font-size: 0.85rem; text-decoration: none; font-weight: 600;">Forgot Password?</a>
                 </div>
-                <input type="password" name="password" class="input-field" required placeholder="Enter password" style="margin-bottom: 0;">
+                <div style="position: relative;">
+                    <input type="password" name="password" class="input-field" required placeholder="Enter password" style="margin-bottom: 0; padding-right: 3rem;">
+                    <button type="button" class="password-toggle-btn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%; width: 40px; padding: 0;">
+                        <i data-lucide="eye" style="width: 20px; height: 20px;"></i>
+                    </button>
+                </div>
             </div>
             
             <button type="submit" class="btn btn-primary" style="width: 100%; height: 3.5rem;">
@@ -33,6 +38,9 @@
         <div style="text-align: center; margin-top: 2rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
             <p style="color: var(--text-muted);">
                 Don't have an account? <a href="{% url 'register' %}" style="color: var(--primary); font-weight: 600; text-decoration: none;">Register</a>
+            </p>
+            <p style="color: var(--text-muted); margin-top: 0.75rem; font-size: 0.9rem;">
+                Are you an Administrator? <a href="{% url 'admin_login' %}" style="color: var(--accent); font-weight: 600; text-decoration: none;">Admin Portal</a>
             </p>
         </div>
     </div>

@@ -32,8 +32,10 @@ def register(request):
         recipient_list = [email]
         try:
             send_mail(subject, message, email_from, recipient_list)
+            messages.success(request, f"OTP sent to {email}")
         except Exception as e:
             print(e) # Log error
+            messages.warning(request, f"Email delivery failed. For testing, your OTP is: {otp}")
             
         request.session['unverified_user_id'] = user.id
         return redirect('verify_otp')
@@ -63,13 +65,47 @@ def verify_otp(request):
             
     return render(request, 'auth/verify_otp.html')
 
+def resend_otp(request):
+    user_id = request.session.get('unverified_user_id')
+    if not user_id:
+        messages.error(request, "No registration session found. Please register first.")
+        return redirect('register')
+        
+    user = get_object_or_404(User, id=user_id)
+    profile = user.profile
+    otp = profile.generate_otp()
+    
+    # Send Email
+    subject = 'Your New OTP for Notes App Verification'
+    message = f'Hi {user.username}, your new OTP is {otp}.'
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [user.email]
+    try:
+        send_mail(subject, message, email_from, recipient_list)
+        messages.success(request, f"A new OTP has been sent to {user.email}.")
+    except Exception as e:
+        print("Resend email failed:", e)
+        messages.warning(request, f"Email delivery failed. For testing, your new OTP is: {otp}")
+        
+    return redirect('verify_otp')
+
 def login_view(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('custom_admin_dashboard')
+        else:
+            return redirect('index')
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
+            if user.is_superuser:
+                messages.error(request, "Access denied. Admins must login via the Admin Portal.")
+                return redirect('admin_login')
+
             # Ensure Profile exists (for superusers created via CLI)
             profile, created = Profile.objects.get_or_create(user=user)
             if created and user.is_superuser:
@@ -88,12 +124,49 @@ def login_view(request):
                 request.session['unverified_user_id'] = user.id
                 # Resend OTP
                 otp = user.profile.generate_otp()
-                send_mail('Verify your account', f'Your OTP is {otp}', settings.EMAIL_HOST_USER, [user.email])
+                try:
+                    send_mail('Verify your account', f'Your OTP is {otp}', settings.EMAIL_HOST_USER, [user.email])
+                    messages.success(request, f"OTP sent to {user.email}")
+                except Exception as e:
+                    print("Resend email failed:", e)
+                    messages.warning(request, f"Email delivery failed. For testing, your OTP is: {otp}")
                 return redirect('verify_otp')
         else:
             messages.error(request, "Invalid username or password")
             
     return render(request, 'auth/login.html')
+
+def admin_login_view(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('custom_admin_dashboard')
+        else:
+            return redirect('index')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            if not user.is_superuser:
+                messages.error(request, "Access denied. Regular users must login via the User Portal.")
+                return redirect('login')
+                
+            # Ensure Profile exists (for superusers created via CLI)
+            profile, created = Profile.objects.get_or_create(user=user)
+            if created:
+                profile.is_verified = True
+                profile.is_approved = True
+                profile.save()
+
+            login(request, user)
+            messages.success(request, "Logged in as Admin.")
+            return redirect('custom_admin_dashboard')
+        else:
+            messages.error(request, "Invalid admin username or password")
+            
+    return render(request, 'auth/admin_login.html')
 
 def forgot_password(request):
     if request.method == 'POST':
@@ -111,8 +184,10 @@ def forgot_password(request):
             message = f'Hi {user.username},\n\nYour OTP for password reset is {otp}. If you did not request this, please ignore this email.'
             try:
                 send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email])
+                messages.success(request, f"OTP sent to {user.email}")
             except Exception as e:
                 print("Email sending failed:", e)
+                messages.warning(request, f"Email delivery failed. For testing, your reset OTP is: {otp}")
                 
             request.session['reset_user_id'] = user.id
             messages.success(request, f"OTP sent to {user.email}")
@@ -188,6 +263,9 @@ def profile(request):
 
 @login_required
 def index(request):
+    if request.user.is_superuser:
+        messages.error(request, "Admins cannot access the user notes section.")
+        return redirect('custom_admin_dashboard')
     query = request.GET.get('q', '')
     cat_id = request.GET.get('category', '')
     show_favs = request.GET.get('favorites', False)
@@ -324,9 +402,21 @@ def add_category(request):
     return redirect('index')
 
 # --- Custom Admin Views ---
-from django.contrib.admin.views.decorators import staff_member_required
+from functools import wraps
 
-@staff_member_required
+def admin_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(request, "Please log in as an administrator.")
+            return redirect('admin_login')
+        if not request.user.is_superuser:
+            messages.error(request, "Access denied. Admins only.")
+            return redirect('index')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+@admin_required
 def custom_admin_dashboard(request):
     users_count = User.objects.count()
     notes_count = Note.objects.count()
@@ -337,12 +427,12 @@ def custom_admin_dashboard(request):
         'pending_users': pending_users
     })
 
-@staff_member_required
+@admin_required
 def custom_admin_users(request):
     profiles = Profile.objects.select_related('user').all().order_by('-user__date_joined')
     return render(request, 'admin/users.html', {'profiles': profiles})
 
-@staff_member_required
+@admin_required
 def custom_admin_approve_user(request, pk):
     profile = get_object_or_404(Profile, user_id=pk)
     profile.is_approved = True
@@ -350,7 +440,7 @@ def custom_admin_approve_user(request, pk):
     messages.success(request, f"User {profile.user.username} approved.")
     return redirect('custom_admin_users')
 
-@staff_member_required
+@admin_required
 def custom_admin_decline_user(request, pk):
     user = get_object_or_404(User, id=pk)
     if not user.is_superuser:
@@ -358,7 +448,7 @@ def custom_admin_decline_user(request, pk):
         messages.success(request, "User declined and deleted.")
     return redirect('custom_admin_users')
 
-@staff_member_required
+@admin_required
 def custom_admin_notes(request):
     notes = Note.objects.all().order_by('-created_at')
     return render(request, 'admin/notes.html', {'notes': notes})
